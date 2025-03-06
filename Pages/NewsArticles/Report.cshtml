@@ -1,0 +1,86 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.NewsArticles.ReportModel
+@{
+    ViewData["Title"] = "News Report";
+}
+
+<h2 class="text-center mb-4 text-primary">News Report</h2>
+
+<!-- Filter Form -->
+<form method="get" class="row g-3 mb-4 justify-content-center">
+    <div class="col-md-3">
+        <label class="form-label">Start Date:</label>
+        <input type="date" name="startDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">End Date:</label>
+        <input type="date" name="endDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter"></i> View</button>
+        <a asp-action="Report" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Reset</a>
+    </div>
+</form>
+
+<!-- Total Count Display -->
+@if (Model.NewsReportViewModel.NewsArticles != null && Model.NewsReportViewModel.NewsArticles.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> Total News Articles: <strong>@Model.NewsReportViewModel.NewsArticles.Count()</strong>
+    </div>
+}
+
+<!-- Report Table -->
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>News Title</th>
+            <th>Created Date</th>
+            <th>Category</th>
+            <th>Created By</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.NewsReportViewModel.NewsArticles != null && Model.NewsReportViewModel.NewsArticles.Any())
+        {
+            @foreach (var item in Model.NewsReportViewModel.NewsArticles)
+            {
+                <tr>
+                    <td>@item.NewsTitle</td>
+                    <td>@(item.CreatedDate?.ToString("MMMM dd, yyyy") ?? "N/A")</td>
+                    <td>@(item.Category?.CategoryName ?? "Uncategorized")</td>
+                    <td>@(item.CreatedBy?.AccountName ?? "Unknown")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center text-muted">No news articles found for the selected period.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Styles {
+    <style>
+        .table {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+}

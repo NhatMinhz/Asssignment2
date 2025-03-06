@@ -1,0 +1,127 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.NewsArticles.CreateModel
+
+@{
+    ViewData["Title"] = "Create News Article";
+    var userId = User.FindFirst("AccountId")?.Value; // Get logged-in user's ID
+}
+@functions {
+    public string GenerateShortId()
+    {
+        return Guid.NewGuid().ToString("N").Substring(0, 10); // Generates a 10-character unique ID
+    }
+}
+
+<h1>Create News Article</h1>
+<hr />
+
+@if (ViewData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> @ViewData["SuccessMessage"]
+    </div>
+
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Index", "NewsArticles")';
+        }, 1000);
+    </script>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> @ViewData["ErrorMessage"]
+    </div>
+}
+
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" onsubmit="return confirmSubmit()">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Auto-generate NewsArticleId -->
+            <input type="hidden" asp-for="NewsArticle.NewsArticleId" value="@GenerateShortId()" />
+
+            <!-- Auto-assign logged-in user -->
+            <input type="hidden" asp-for="NewsArticle.CreatedById" value="@userId" />
+
+            <!-- Auto-set CreatedDate -->
+            <input type="hidden" asp-for="NewsArticle.CreatedDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+            <div class="form-group">
+                <label asp-for="NewsArticle.NewsTitle" class="control-label"></label>
+                <input asp-for="NewsArticle.NewsTitle" class="form-control" placeholder="Enter title" required />
+                <span asp-validation-for="NewsArticle.NewsTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewsArticle.Headline" class="control-label"></label>
+                <input asp-for="NewsArticle.Headline" class="form-control" placeholder="Enter headline" required />
+                <span asp-validation-for="NewsArticle.Headline" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewsArticle.NewsContent" class="control-label"></label>
+                <textarea asp-for="NewsArticle.NewsContent" class="form-control" rows="4" placeholder="Enter news content" required></textarea>
+                <span asp-validation-for="NewsArticle.NewsContent" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewsArticle.NewsSource" class="control-label"></label>
+                <input asp-for="NewsArticle.NewsSource" class="form-control" placeholder="Enter source" />
+                <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NewsArticle.CategoryId" class="control-label"></label>
+                <select asp-for="NewsArticle.CategoryId" class="form-control" asp-items="Model.Categories" required>
+                    <option>-- Select a Category --</option>
+                </select>
+                <span asp-validation-for="NewsArticle.CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ListTag" class="control-label"></label>
+                <select class="form-control" asp-for="ListTag" multiple asp-items="Model.TagIds" required>
+                    <option>-- Select a Tags --</option>
+                </select>
+                <span asp-validation-for="ListTag" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="NewsArticle.NewsStatus" class="form-check-input" type="checkbox" />
+                <label asp-for="NewsArticle.NewsStatus" class="form-check-label">Published</label>
+            </div>
+
+            @* <div class="form-group"> *@
+            @*     <label asp-for="UpdatedById" class="control-label"></label> *@
+            @*     <input asp-for="UpdatedById" class="form-control" placeholder="Enter ID of updater" /> *@
+            @*     <span asp-validation-for="UpdatedById" class="text-danger"></span> *@
+            @* </div> *@
+
+            @* <div class="form-group"> *@
+            @*     <label asp-for="ModifiedDate" class="control-label"></label> *@
+            @*     <input asp-for="ModifiedDate" type="datetime-local" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required /> *@
+            @*     <span asp-validation-for="ModifiedDate" class="text-danger"></span> *@
+            @* </div> *@
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create</button>
+                <a asp-page="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmSubmit() {
+            return confirm("Are you sure you want to create this news article?");
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

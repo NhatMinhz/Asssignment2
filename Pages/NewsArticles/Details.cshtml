@@ -1,0 +1,117 @@
+﻿@page
+@using System.Globalization
+@model FUNewsManagementSystem.Pages.NewsArticles.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@{
+    ViewData["Title"] = Model.NewsArticle.NewsTitle;
+}
+
+<div class="container mt-5">
+    <!-- News Title & Headline -->
+    <article class="post-preview">
+        <h1 class="post-title text-primary fw-bold">
+            @Model.NewsArticle.NewsTitle
+        </h1>
+        @if (!string.IsNullOrEmpty(Model.NewsArticle.Headline))
+        {
+            <h3 class="post-subtitle text-muted">
+                @Model.NewsArticle.Headline
+            </h3>
+        }
+        else
+        {
+            <h3 class="post-subtitle text-muted">
+                @Html.DisplayFor(model => model.NewsArticle.NewsContent).ToString().Substring(0, 100)...
+            </h3>
+        }
+
+        <!-- Date -->
+        <p class="post-meta text-secondary">
+            Post in:
+            @(Model.NewsArticle.ModifiedDate.HasValue ? Model.NewsArticle.ModifiedDate.Value.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture) : "Not Available")
+        </p>
+    </article>
+
+    <hr />
+
+    <!-- News Content -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-primary">Content</h4>
+            <p class="card-text">@Html.DisplayFor(model => model.NewsArticle.NewsContent)</p>
+        </div>
+    </div>
+
+    <!-- Additional Info -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-primary">Details</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Source:</strong> @Html.DisplayFor(model => model.NewsArticle.NewsSource)
+                </li>
+                <li class="list-group-item">
+                    <strong>Status:</strong>
+                    <span class="badge @(Model.NewsArticle.NewsStatus == true ? "bg-success" : "bg-danger")">
+                        @(Model.NewsArticle.NewsStatus == true ? "Active" : "Inactive")
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    <strong>Category:</strong>
+                    @(Model.NewsArticle.Category != null ? Model.NewsArticle.Category.CategoryName : "None")
+                </li>
+                <li class="list-group-item">
+                    <strong>Last Updated:</strong> @Model.NewsArticle.ModifiedDate?.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture)
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex gap-3 mt-4">
+        @if (User.IsInRole("Staff"))
+        {
+            <a asp-page="/NewsArticles/Edit" asp-route-id="@Model.NewsArticle.NewsArticleId" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+        }
+        <a asp-page="/NewsArticles/Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .post-title {
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+
+        .post-subtitle {
+            font-size: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .card {
+            transition: box-shadow 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+}

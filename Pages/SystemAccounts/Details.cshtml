@@ -1,0 +1,76 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.SystemAccounts.DetailsModel
+
+@{
+    ViewData["Title"] = "Account Details";
+}
+
+<h1>Account Details</h1>
+<hr />
+
+<div class="card shadow-lg p-4 mb-4 bg-white rounded">
+    <div class="card-body">
+        <h4 class="card-title text-primary">@Html.DisplayFor(model => model.SystemAccount.AccountName)</h4>
+
+        <dl class="row">
+            <dt class="col-sm-3 font-weight-bold">@Html.DisplayNameFor(model => model.SystemAccount.AccountEmail)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.SystemAccount.AccountEmail)</dd>
+
+            <dt class="col-sm-3 font-weight-bold">@Html.DisplayNameFor(model => model.SystemAccount.AccountRole)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.SystemAccount.AccountRole)</dd>
+
+            <dt class="col-sm-3 font-weight-bold">@Html.DisplayNameFor(model => model.SystemAccount.AccountPassword)</dt>
+            <dd class="col-sm-9">
+                <div class="input-group">
+                    <input id="passwordField" type="password" class="form-control" value="@Model.SystemAccount.AccountPassword" readonly />
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                        <i id="eyeIcon" class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4 d-flex justify-content-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="SystemAccounts" asp-action="Logout" class="btn btn-outline-danger btn-lg px-4 py-2 mx-2 shadow-sm">
+            <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
+    }
+    else
+    {
+        <a asp-controller="SystemAccounts" asp-page="./Login" class="btn btn-outline-primary btn-lg px-4 py-2 mx-2 shadow-sm">
+            <i class="fas fa-sign-in-alt me-2"></i> Login
+        </a>
+    }
+</div>
+
+<div class="mt-3">
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    }
+    <a asp-page="./Edit" asp-route-id="@Model.SystemAccount.AccountId" class="btn btn-primary">Edit</a>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("passwordField");
+            var eyeIcon = document.getElementById("eyeIcon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
+}

@@ -1,0 +1,40 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.Categories.CreateModel
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<h1>Create Category</h1>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="Category.CategoryName" class="form-label"></label>
+        <input asp-for="Category.CategoryName" class="form-control" />
+        <span asp-validation-for="Category.CategoryName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Category.CategoryDesciption" class="form-label"></label>
+        <textarea asp-for="Category.CategoryDesciption" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Category.ParentCategoryId" class="form-label">Parent Category</label>
+        <select asp-for="Category.ParentCategoryId" asp-items="Model.ParentCategories" class="form-select">
+            <option value="">-- Select Parent Category --</option>
+        </select>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input asp-for="Category.IsActive" class="form-check-input" />
+        <label asp-for="Category.IsActive" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</form>

@@ -1,0 +1,98 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.SystemAccounts.EditModel
+
+@{
+    ViewData["Title"] = "Edit Account";
+    string roleDisplay = Model.SystemAccount.AccountRole == 1 ? "Staff" : Model.SystemAccount.AccountRole == 2 ? "Lecturer" : "Unknown";
+}
+
+<h1 class="text-primary"><i class="fas fa-user-edit"></i> Edit Account</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" onsubmit="return confirmEdit()">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <!-- Hidden Fields to Keep AccountId and AccountRole -->
+            <input type="hidden" asp-for="SystemAccount.AccountId" />
+            <input type="hidden" asp-for="SystemAccount.AccountRole" />
+
+            <!-- Account Name -->
+            <div class="mb-3">
+                <label asp-for="SystemAccount.AccountName" class="form-label fw-bold"></label>
+                <input asp-for="SystemAccount.AccountName" class="form-control" required />
+                <span asp-validation-for="SystemAccount.AccountName" class="text-danger"></span>
+            </div>
+
+            <!-- Account Email -->
+            <div class="mb-3">
+                <label asp-for="SystemAccount.AccountEmail" class="form-label fw-bold"></label>
+                <input asp-for="SystemAccount.AccountEmail" type="email" class="form-control" required />
+                <span asp-validation-for="SystemAccount.AccountEmail" class="text-danger"></span>
+            </div>
+
+            <!-- Display Role as Read-Only -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Role</label>
+                <input type="text" class="form-control bg-light" value="@roleDisplay" readonly />
+            </div>
+
+            <!-- Password Field with Toggle Visibility -->
+            <div class="mb-3">
+                <label asp-for="SystemAccount.AccountPassword" class="form-label fw-bold"></label>
+                <div class="input-group">
+                    <input asp-for="SystemAccount.AccountPassword" type="password" class="form-control" id="passwordField" value="@Model.SystemAccount.AccountPassword" required />
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                        <i id="eyeIcon" class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="SystemAccount.AccountPassword" class="text-danger"></span>
+            </div>
+            @{
+                var accountId = User.FindFirst("AccountId")?.Value;
+            }
+            <!-- Buttons -->
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" asp-action="Details" asp-route-id="@accountId" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save
+                </button>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-page="./Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("passwordField");
+            var eyeIcon = document.getElementById("eyeIcon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        function confirmEdit() {
+            return confirm("Are you sure you want to save changes to this account?");
+        }
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

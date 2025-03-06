@@ -1,0 +1,43 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.Categories.DetailsModel
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h1 class="mb-3">Category Details</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="card-title">Category Information</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Category.CategoryName)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Category.CategoryName)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Category.CategoryDesciption)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Category.CategoryDesciption)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Category.IsActive)</dt>
+            <dd class="col-sm-9">
+                <span class="badge @(Model.Category.IsActive ? "bg-success" : "bg-danger")">
+                    @(Model.Category.IsActive ? "Active" : "Inactive")
+                </span>
+            </dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Category.ParentCategory)</dt>
+            <dd class="col-sm-9">
+                @(Model.Category.ParentCategory != null ? Model.Category.ParentCategory.CategoryName : "None")
+            </dd>
+        </dl>
+
+        <div class="d-flex gap-3 mt-4">
+            <a asp-action="Edit" asp-route-id="@Model?.Category.CategoryId" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>

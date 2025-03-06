@@ -1,0 +1,51 @@
+﻿@page
+@model FUNewsManagementSystem.Pages.Categories.IndexModel
+@using Repository
+@using FUNewsManagementSystem.ViewModel
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<h1>Category Management 1</h1>
+
+<form method="get" class="mb-3 d-flex">
+    <input type="text" asp-for="SearchString" class="form-control me-2" placeholder="Search by category name...">
+    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+    <a asp-page="./Index" class="btn btn-secondary ms-2"><i class="fas fa-sync-alt"></i> Reset</a>
+</form>
+
+<p>
+    <a asp-page="Create" class="btn btn-success"><i class="fas fa-plus"></i> Create New</a>
+</p>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Category Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Parent Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Categories)
+        {
+            <tr>
+                <td>@item.CategoryName</td>
+                <td>@item.CategoryDesciption</td>
+                <td>
+                    <span class="badge @(item.IsActive ? "bg-success" : "bg-danger")">
+                        @(item.IsActive ? "Active" : "Inactive")
+                    </span>
+                </td>
+                <td>@(item.ParentCategory?.CategoryName ?? "None")</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</a>
+                    <a asp-page="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
