@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Service.Interfaces;
 using System.Security.Claims;
+using System.Diagnostics;
 
 namespace FUNewsManagementSystem.Pages.SystemAccounts
 {
@@ -69,7 +70,7 @@ namespace FUNewsManagementSystem.Pages.SystemAccounts
             {
                 claims.Add(new Claim("AccountId", accountId.Value.ToString()));
             }
-
+            Debug.WriteLine($"User: {userName}, Role Assigned: {role}");
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity), new AuthenticationProperties { IsPersistent = false });

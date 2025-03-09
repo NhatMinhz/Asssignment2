@@ -73,17 +73,18 @@
             </dd>
         </dl>
 
-        <form asp-action="Delete" onsubmit="return confirmDelete()">
+        <form method="post" asp-page="/NewsArticles/Delete" asp-route-id="@Model.NewsArticle.NewsArticleId" onsubmit="return confirmDelete()">
             <input type="hidden" asp-for="NewsArticle.NewsArticleId" />
             <div class="d-flex gap-3 mt-4">
                 <button type="submit" class="btn btn-danger">
                     <i class="fas fa-trash"></i> Delete
                 </button>
-                <a asp-action="/NewsArticles/Index" class="btn btn-secondary">
+                <a asp-page="/NewsArticles/Index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to List
                 </a>
             </div>
         </form>
+
     </div>
 </div>
 
