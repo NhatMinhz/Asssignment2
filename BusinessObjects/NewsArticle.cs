@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects;
 
@@ -37,10 +38,10 @@ public partial class NewsArticle
 
     [Display(Name = "Modified Date")]
     public DateTime? ModifiedDate { get; set; }
-
+    [JsonIgnore]
     public virtual Category? Category { get; set; }
-
+    [JsonIgnore]
     public virtual SystemAccount? CreatedBy { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<NewsTag> NewsTags { get; set; } = new List<NewsTag>();
 }

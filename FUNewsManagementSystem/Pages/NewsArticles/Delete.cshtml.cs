@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects;
 using Service.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using FUNewsManagementSystem.Hubs;
 
 namespace FUNewsManagementSystem.Pages.NewsArticles
 {
     public class DeleteModel : PageModel
     {
         private readonly INewArticleService _newArticleService;
+        private readonly IHubContext<SignalRServer> _hubContext;
 
-        public DeleteModel(INewArticleService newArticleService)
+        public DeleteModel(INewArticleService newArticleService, IHubContext<SignalRServer> hubContext)
         {
             _newArticleService = newArticleService;
+            _hubContext = hubContext;
         }
 
         [BindProperty]
@@ -54,6 +58,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             {
                 NewsArticle = newsarticle;
                 await _newArticleService.DeleteNewsArticleAsync(id);
+                await _hubContext.Clients.All.SendAsync("LoadNewsArticlesItem");
             }
 
             return RedirectToPage("./Index");

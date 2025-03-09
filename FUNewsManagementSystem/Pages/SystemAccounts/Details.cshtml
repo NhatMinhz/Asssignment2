@@ -35,13 +35,13 @@
 <div class="mt-4 d-flex justify-content-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <a asp-controller="SystemAccounts" asp-action="Logout" class="btn btn-outline-danger btn-lg px-4 py-2 mx-2 shadow-sm">
-            <i class="fas fa-sign-out-alt me-2"></i> Logout
-        </a>
+        <form method="post" asp-page="/SystemAccounts/Logout">
+            <button class="btn btn-outline-danger btn-lg px-4 py-2 mx-2 shadow-sm" type="submit"><i class="fas fa-sign-out-alt me-2"></i> Logout</button>
+        </form>
     }
     else
     {
-        <a asp-controller="SystemAccounts" asp-page="./Login" class="btn btn-outline-primary btn-lg px-4 py-2 mx-2 shadow-sm">
+        <a asp-page="SystemAccounts/Login" class="btn btn-outline-primary btn-lg px-4 py-2 mx-2 shadow-sm">
             <i class="fas fa-sign-in-alt me-2"></i> Login
         </a>
     }

@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects;
 using Service.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using FUNewsManagementSystem.Hubs;
+using Microsoft.IdentityModel.Tokens;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FUNewsManagementSystem.Pages.NewsArticles
 {
@@ -16,13 +20,19 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
         private readonly ITagService _tagService;
         private readonly INewArticleService _newArticleService;
         private readonly ISystemAccountService _systemAccountService;
+        private readonly IHubContext<SignalRServer> _hubContext;
 
-        public CreateModel(ICategoryService categoryService, ITagService tagService, INewArticleService newArticleService, ISystemAccountService systemAccountService)
+        public CreateModel(ICategoryService categoryService,
+            ITagService tagService,
+            INewArticleService newArticleService,
+            ISystemAccountService systemAccountService,
+            IHubContext<SignalRServer> hubContext)
         {
             _categoryService = categoryService;
             _tagService = tagService;
             _newArticleService = newArticleService;
             _systemAccountService = systemAccountService;
+            _hubContext = hubContext;
         }
 
         public SelectList Categories { get; set; }
@@ -44,12 +54,24 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (ListTag == null || !ListTag.Any())
+            {
+                ModelState.AddModelError("ListTag","Bạn phải chọn ít nhất 1 tag");
+            }
+
             if (!ModelState.IsValid)
             {
-                return Page();
+                var errors = ModelState.Where(ms => ms.Value.Errors.Any())
+                               .ToDictionary(
+                                   kvp => kvp.Key,
+                                   kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                               );
+
+                return new JsonResult(new { success = false, errors });
             }
 
             await _newArticleService.AddNewsArticleAsync(NewsArticle, ListTag);
+            await _hubContext.Clients.All.SendAsync("LoadNewsArticlesItem");
             return RedirectToPage("./Index");
         }
     }

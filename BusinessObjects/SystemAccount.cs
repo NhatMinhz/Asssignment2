@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects;
 
@@ -19,6 +20,6 @@ public partial class SystemAccount
 
     [Display(Name = "Account Password")]
     public string? AccountPassword { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<NewsArticle> NewsArticles { get; set; } = new List<NewsArticle>();
 }

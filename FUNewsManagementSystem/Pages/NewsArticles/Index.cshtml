@@ -3,6 +3,14 @@
 
 @{
     ViewData["Title"] = "News Articles";
+    var userId = User.FindFirst("AccountId")?.Value; // Get logged-in user's ID
+}
+
+@functions {
+    public string GenerateShortId()
+    {
+        return Guid.NewGuid().ToString("N").Substring(0, 10); // Generates a 10-character unique ID
+    }
 }
 
 <h1 class="mb-4"><i class="fas fa-newspaper"></i> News Articles</h1>
@@ -30,12 +38,175 @@
 </div>
 
 <p>
-    <a asp-page="./Create" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Create New</a>
+    @* <a asp-page="./Create" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Create New</a> *@
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createNewsModal">
+        <i class="fas fa-plus"></i> Create New
+    </button>
+
     @if (User.IsInRole("Admin"))
     {
         <a asp-page="./Report" class="btn btn-secondary mb-3"><i class="fas fa-chart-bar"></i> Report</a>
     }
 </p>
+
+<div class="modal fade" id="createNewsModal" tabindex="-1" aria-labelledby="createNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success d-flex justify-content-center">
+                <h5 class="modal-title text-center text-white w-100" id="createNewsModalLabel">Create News Article</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-page="/NewsArticles/Create" id="createNewsForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- Auto-generate NewsArticleId -->
+                    <input type="hidden" asp-for="NewsArticle.NewsArticleId" value="@GenerateShortId()" />
+
+                    <!-- Auto-assign logged-in user -->
+                    <input type="hidden" asp-for="NewsArticle.CreatedById" value="@userId" />
+
+                    <!-- Auto-set CreatedDate -->
+                    <input type="hidden" asp-for="NewsArticle.CreatedDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+                    <div class="form-group">
+                        <label asp-for="NewsArticle.NewsTitle" class="control-label"></label>
+                        <input asp-for="NewsArticle.NewsTitle" class="form-control" placeholder="Enter title" required />
+                        <span asp-validation-for="NewsArticle.NewsTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewsArticle.Headline" class="control-label"></label>
+                        <input asp-for="NewsArticle.Headline" class="form-control" placeholder="Enter headline" required />
+                        <span asp-validation-for="NewsArticle.Headline" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewsArticle.NewsContent" class="control-label"></label>
+                        <textarea asp-for="NewsArticle.NewsContent" class="form-control" rows="4" placeholder="Enter news content" required></textarea>
+                        <span asp-validation-for="NewsArticle.NewsContent" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewsArticle.NewsSource" class="control-label"></label>
+                        <input asp-for="NewsArticle.NewsSource" class="form-control" placeholder="Enter source" />
+                        <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="NewsArticle.CategoryId" class="control-label"></label>
+                        <select asp-for="NewsArticle.CategoryId" class="form-control" asp-items="Model.CategoriesSelectList" required>
+                            <option>-- Select a Category --</option>
+                        </select>
+                        <span asp-validation-for="NewsArticle.CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Tags</label>
+                        <div>
+                            @foreach (var tag in Model.TagIds)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="tag_@tag.Value" name="ListTag" value="@tag.Value" />
+                                    <label class="form-check-label" for="tag_@tag.Value">@tag.Text</label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="ListTag" class="text-danger"></span>
+                    </div>
+
+                    <label>Published</label>
+                    <div class="form-group form-check">
+                        <input asp-for="NewsArticle.NewsStatus" class="form-check-input" type="checkbox" />
+                        <label asp-for="NewsArticle.NewsStatus" class="form-check-label">Published</label>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning d-flex justify-content-center">
+                <h5 class="modal-title text-white text-center" id="editNewsModalLabel">Edit News Article</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="/NewsArticles/Edit" id="editNewsForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <input type="hidden" id="editArticlesId" asp-for="NewsArticle.NewsArticleId" />
+
+                    <div class="mb-3">
+                        <label asp-for="NewsArticle.NewsTitle" class="form-label"></label>
+                        <input asp-for="NewsArticle.NewsTitle" id="editTitle" class="form-control" placeholder="Enter title" required />
+                        <span asp-validation-for="NewsArticle.NewsTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewsArticle.Headline" class="form-label"></label>
+                        <input asp-for="NewsArticle.Headline" id="editHeadline" class="form-control" placeholder="Enter headline" required />
+                        <span asp-validation-for="NewsArticle.Headline" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="NewsArticle.NewsContent" class="form-label"></label>
+                        <textarea asp-for="NewsArticle.NewsContent" id="editContent" class="form-control" rows="4" placeholder="Enter news content" required></textarea>
+                        <span asp-validation-for="NewsArticle.NewsContent" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewsArticle.NewsSource" class="form-label"></label>
+                        <input asp-for="NewsArticle.NewsSource" id="editNewsSource" class="form-control" placeholder="Enter source" />
+                        <span asp-validation-for="NewsArticle.NewsSource" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NewsArticle.CategoryId" class="form-label"></label>
+                        <select asp-for="NewsArticle.CategoryId" id="editCategory" class="form-select" asp-items="Model.CategoriesSelectList" required>
+                            <option value="">-- Select a Category --</option>
+                        </select>
+                        <span asp-validation-for="NewsArticle.CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tags</label>
+                        <div id="editTags"></div>
+                    </div>
+
+                    <div>
+                        <label>Published</label>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="NewsArticle.NewsStatus" id="editNewsStatus" class="form-check-input" type="checkbox" />
+                        <label asp-for="NewsArticle.NewsStatus" class="form-check-label">Published</label>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <table class="table table-hover table-striped shadow-sm rounded">
     <thead class="table-dark">
@@ -47,7 +218,7 @@
             <th>News Status</th>
             <th>Category</th>
             <th>Created By</th>
-            <th>Actions</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -65,20 +236,23 @@
                 </td>
                 <td>@(item.Category != null ? item.Category.CategoryName : "None")</td>
                 <td>@(item.CreatedBy != null ? item.CreatedBy.AccountName : "Unknown")</td>
-                <td>
-                    <a asp-page="/NewsArticles/Details" asp-route-id="@item.NewsArticleId" class="btn btn-info btn-sm">
-                        <i class="fas fa-eye"></i> Details
-                    </a>
+                <td class="text-center">
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <a asp-page="/NewsArticles/Details" asp-route-id="@item.NewsArticleId" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
 
-                    @if (User.IsInRole("Staff"))
-                    {
-                        <a asp-page="/NewsArticles/Edit" asp-route-id="@item.NewsArticleId" class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a asp-page="/NewsArticles/Delete" asp-route-id="@item.NewsArticleId" class="btn btn-danger btn-sm" onclick="return confirmDelete();">
-                            <i class="fas fa-trash"></i> Delete
-                        </a>
-                    }
+                        @if (User.IsInRole("Staff"))
+                        {
+                            <a onclick="openEditModal('@item.NewsArticleId');" class="btn btn-warning btn-sm edit-button">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <form method="POST" asp-page="/NewsArticles/Delete" asp-route-id="'@item.NewsArticleId'" asp-page-handler="Delete" onsubmit="return jQueryModalDelete(this)" class="d-inline">
+                                <button type="submit" class="btn btn-danger text-white"> Delete</button>
+                            </form>
+                        }
+                    </div>
                 </td>
             </tr>
         }
@@ -88,8 +262,115 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <script>
-        function confirmDelete() {
-            return confirm("Are you sure you want to delete this news article?");
+        function openEditModal(newsArticleId){
+            $.ajax({
+                url: `/NewsArticles/Edit?id=${newsArticleId}`,
+                type: "GET",
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response)
+                        $("#editArticlesId").val(response.newsArticle.newsArticleId)
+                        $("#editTitle").val(response.newsArticle.newsTitle);
+                        $("#editHeadline").val(response.newsArticle.headline);
+                        $("#editContent").val(response.newsArticle.newsContent);
+                        $("#editNewsSource").val(response.newsArticle.newsSource);
+                        $("#editNewsStatus").prop("checked", response.newsArticle.newsStatus);
+
+                        var categoryDropdown = $("#editCategory");
+                        categoryDropdown.empty(); // Xóa option cũ
+                        categoryDropdown.append('<option value="">-- Select a Category --</option>');
+                        $.each(response.categories, function (index, category) {
+                            var selected = response.newsArticle.categoryId == category.categoryId ? "selected" : ""
+                            categoryDropdown.append(`<option value="${category.categoryId}" ${selected}>${category.categoryName}</option>`);
+                        });
+
+                        var tagsContainer = $("#editTags");
+                        tagsContainer.empty();
+
+                        $.each(response.tags, function (index, tag) {
+                            var checkbox = `
+                                <div class="form-check">
+                                    <input class="form-check-input" name="ListTag" type="checkbox" id="tag_${tag.tagId}" value="${tag.tagId}">
+                                    <label class="form-check-label" for="tag_${tag.tagId}">${tag.tagName}</label>
+                                </div>
+                            `;
+                            tagsContainer.append(checkbox);
+                        });
+
+                        $("#editNewsModal").modal("show");
+                    } else {
+                        $.each(response.errors, function (key, messages) {
+                            var errorSpan = $("span[data-valmsg-for='" + key + "']");
+                            if (errorSpan.length) {
+                                errorSpan.text(messages.join(", "));
+                            }
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    alert("Error: " + xhr.responseText);
+                }
+            });
         }
+        $(document).ready(function () {
+            $("#createNewsForm").submit(function (event) {
+                event.preventDefault(); // Ngăn form reload trang
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: "/NewsArticles/Create",
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            $("#createNewsForm")[0].reset();
+                            $("#createNewsModal").modal("hide");
+                            location.reload();
+                        } else {
+                            $.each(response.errors, function (key, messages) {
+                                var errorSpan = $("span[data-valmsg-for='" + key + "']");
+                                if (errorSpan.length) {
+                                    errorSpan.text(messages.join(", "));
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Error: " + xhr.responseText);
+                    }
+                });
+            });
+
+            $("#editNewsForm").submit(function (event) {
+                event.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: "/NewsArticles/Edit",
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $("#editNewsForm")[0].reset();
+                            $("#editNewsModal").modal("hide");
+                            location.reload();
+                        } else {
+                            $.each(response.errors, function (key, messages) {
+                                var errorSpan = $("span[data-valmsg-for='" + key + "']");
+                                if (errorSpan.length) {
+                                    errorSpan.text(messages.join(", "));
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Error: " + xhr.responseText);
+                    }
+                });
+            });
+        });
     </script>
 }
