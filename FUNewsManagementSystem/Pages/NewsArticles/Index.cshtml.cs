@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Service.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FUNewsManagementSystem.BLL.Hubs;
 
 namespace FUNewsManagementSystem.Pages.NewsArticles
 {
@@ -14,11 +16,13 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
     {
         private readonly INewArticleService _newsArticleService;
         private readonly ICategoryService _categoryService;
+        private readonly IHubContext<NewsHub> _newsHub;
 
-        public IndexModel(INewArticleService newsArticleService, ICategoryService categoryService)
+        public IndexModel(INewArticleService newsArticleService, ICategoryService categoryService, IHubContext<NewsHub> newsHub)
         {
             _newsArticleService = newsArticleService;
             _categoryService = categoryService;
+            _newsHub = newsHub;
         }
 
         public List<NewsArticle> NewsArticles { get; set; } = new();
@@ -37,6 +41,22 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
 
             NewsArticles = articles.ToList();
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(int articleId)
+        {
+            var article = await _newsArticleService.GetNewsArticleByIdAsync(articleId.ToString());
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            await _newsArticleService.DeleteNewsArticleAsync(articleId.ToString());
+
+            // Notify clients via SignalR
+            await _newsHub.Clients.All.SendAsync("ReceiveNewsDelete", articleId);
+
+            return RedirectToPage();
         }
     }
 }

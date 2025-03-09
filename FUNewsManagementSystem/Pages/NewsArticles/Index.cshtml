@@ -87,9 +87,32 @@
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script>
-        function confirmDelete() {
-            return confirm("Are you sure you want to delete this news article?");
-        }
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/newsHub")  
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.start().catch(function (err) {
+            console.error(err.toString());
+        });
+
+        connection.on("ReceiveNewsUpdate", function (article) {
+            alert("News Updated: " + article.newsTitle);
+            location.reload(); 
+        });
+
+        connection.on("ReceiveNewsEdit", function (article) {
+            alert("News Edited: " + article.newsTitle);
+            location.reload();
+        });
+
+        connection.on("ReceiveNewsDelete", function (articleId) {
+            alert("News Article Deleted: " + articleId);
+            location.reload();
+        });
     </script>
 }
+
