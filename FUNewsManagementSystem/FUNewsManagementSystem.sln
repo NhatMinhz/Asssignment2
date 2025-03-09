@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObjects", "..\BusinessObjects\BusinessObjects.csproj", "{E89F60AF-425A-4F5F-B34A-0ED754034105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "..\Repository\Repositories.csproj", "{86F0D48F-C60E-4E22-A66C-8BC9C5F33E0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem.DAL", "..\Repository\FUNewsManagementSystem.DAL.csproj", "{86F0D48F-C60E-4E22-A66C-8BC9C5F33E0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "..\Service\Services.csproj", "{389D9D86-4933-4B3F-9395-014B94D1C479}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem.BLL", "..\Service\FUNewsManagementSystem.BLL.csproj", "{389D9D86-4933-4B3F-9395-014B94D1C479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

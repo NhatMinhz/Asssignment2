@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Service\Services.csproj" />
+    <ProjectReference Include="..\Service\FUNewsManagementSystem.BLL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
