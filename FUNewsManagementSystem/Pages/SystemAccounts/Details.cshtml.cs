@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects;
 using Service.Interfaces;
+using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Pages.SystemAccounts
 {
@@ -19,25 +17,29 @@ namespace FUNewsManagementSystem.Pages.SystemAccounts
             _systemAccountService = systemAccountService;
         }
 
-        public SystemAccount SystemAccount { get; set; } = default!;
+        public SystemAccount? SystemAccount { get; set; }
 
         public async Task<IActionResult> OnGetAsync(short id)
         {
-            if (id == null)
+            if (id == 0) 
             {
                 return NotFound();
             }
 
-            var systemaccount = await _systemAccountService.GetAccountByIdAsync(id);
-            if (systemaccount == null)
+            SystemAccount = await _systemAccountService.GetAccountByIdAsync(id);
+
+            if (SystemAccount == null)
             {
                 return NotFound();
             }
-            else
-            {
-                SystemAccount = systemaccount;
-            }
+
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToPage("/Index");
         }
     }
 }

@@ -56,7 +56,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             // Notify clients via SignalR
             await _newsHub.Clients.All.SendAsync("ReceiveNewsDelete", articleId);
 
-            return RedirectToPage();
+            return RedirectToPage("/NewsArticles/Index");
         }
     }
 }

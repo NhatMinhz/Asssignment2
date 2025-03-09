@@ -56,7 +56,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
                 await _newArticleService.DeleteNewsArticleAsync(id);
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("/NewsArticles/Index");
         }
     }
 }
