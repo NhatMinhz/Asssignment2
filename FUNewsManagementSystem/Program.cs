@@ -1,4 +1,4 @@
-using BusinessObjects;
+using FUNewsManagementSystem.DAL.Models;
 using FUNewsManagementSystem.BLL.Hubs;
 using FUNewsManagementSystem.BLL.Interfaces;
 using FUNewsManagementSystem.DAL.Interfaces;

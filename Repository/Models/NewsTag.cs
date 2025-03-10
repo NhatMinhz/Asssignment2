@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BusinessObjects;
+namespace FUNewsManagementSystem.DAL.Models;
 [PrimaryKey(nameof(NewsArticleId), nameof(TagId))]
 public partial class NewsTag
 {

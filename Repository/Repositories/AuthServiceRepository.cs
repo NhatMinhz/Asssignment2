@@ -1,4 +1,4 @@
-﻿using BusinessObjects;
+﻿using FUNewsManagementSystem.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FUNewsManagementSystem.DAL.Repositories

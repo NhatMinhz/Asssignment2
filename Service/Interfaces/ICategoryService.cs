@@ -1,4 +1,4 @@
-﻿using BusinessObjects;
+﻿using FUNewsManagementSystem.DAL.Models;
 
 namespace FUNewsManagementSystem.BLL.Interfaces
 {

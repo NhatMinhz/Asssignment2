@@ -1,4 +1,4 @@
-﻿using BusinessObjects;
+﻿using FUNewsManagementSystem.DAL.Models;
 using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

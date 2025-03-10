@@ -29,8 +29,9 @@
                 <span asp-validation-for="Tag.Note" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" onclick="return confirmSubmit();" />
             </div>
+
         </form>
     </div>
 </div>
@@ -40,5 +41,13 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function confirmSubmit() {
+            return confirm("Are you sure you want to create this tag?");
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+

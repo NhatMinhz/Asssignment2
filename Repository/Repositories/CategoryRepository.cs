@@ -1,4 +1,4 @@
-﻿using BusinessObjects;
+﻿using FUNewsManagementSystem.DAL.Models;
 using FUNewsManagementSystem.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

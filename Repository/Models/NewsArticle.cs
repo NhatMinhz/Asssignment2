@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BusinessObjects;
+namespace FUNewsManagementSystem.DAL.Models;
 
 public partial class NewsArticle
 {
