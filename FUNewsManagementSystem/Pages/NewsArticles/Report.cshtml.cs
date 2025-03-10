@@ -17,11 +17,11 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
 
         public ReportModel(INewArticleService newsArticleService)
         {
-            _newsArticleService = newsArticleService;
+            _newArticleService = newArticleService;
+            StartDate = new DateTime(2024, 1, 1); 
+            EndDate = DateTime.Now;
         }
 
-        public DateTime StartDate { get; set; } = DateTime.Now.AddMonths(-1);
-        public DateTime EndDate { get; set; } = DateTime.Now;
         public NewsReportViewModel NewsReportViewModel { get; set; } = new();
         public (SystemAccount CreatedBy, int ArticleCount)? TopContributor { get; set; }
         public (Category CategoryName, int ArticleCount)? MostPopularCategory { get; set; }
