@@ -1,7 +1,7 @@
 ﻿using BusinessObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository.Repositories
+namespace FUNewsManagementSystem.DAL.Repositories
 {
     public class AuthServiceRepository
     {

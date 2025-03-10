@@ -1,6 +1,6 @@
 ﻿using BusinessObjects;
 
-namespace Repository.Interfaces
+namespace FUNewsManagementSystem.DAL.Interfaces
 {
     public interface ISystemAccountRepository
     {

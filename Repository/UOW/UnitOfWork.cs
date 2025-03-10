@@ -1,13 +1,10 @@
 ﻿using BusinessObjects;
-using Repository.Interfaces;
-using Repository.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FUNewsManagementSystem.DAL.Interfaces;
+using FUNewsManagementSystem.DAL.Repositories;
 
-namespace Repository.UOW
+using Repository.UOW;
+
+namespace FUNewsManagementSystem.DAL.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {

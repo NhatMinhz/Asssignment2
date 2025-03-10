@@ -1,8 +1,8 @@
 ﻿using BusinessObjects;
-using Repository.Interfaces;
-using Repository.Repositories;
+using FUNewsManagementSystem.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace Repository.Repositories
+namespace FUNewsManagementSystem.DAL.Repositories
 {
     public class TagRepository : ITagRepository
     {
@@ -13,50 +13,42 @@ namespace Repository.Repositories
             _context = context;
         }
 
-        public IEnumerable<Tag> GetAllTags()
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
         {
-            return _context.Tags.ToList();
-        }
-        public IEnumerable<Tag> GetTagsByIds(IEnumerable<int> tagIds)
-        {
-            return _context.Tags.Where(t => tagIds.Contains(t.TagId)).ToList();
+            return await _context.Tags.ToListAsync();
         }
 
-        public Tag GetTagById(int id)
+        public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagIds)
         {
-            return _context.Tags.Find(id);
+            return await _context.Tags.Where(t => tagIds.Contains(t.TagId)).ToListAsync();
         }
 
-        public void AddTag(Tag tag)
+        public async Task<Tag?> GetTagByIdAsync(int id)
         {
-            tag.TagId = (short)(_context.Tags.Max(a => (int?)a.TagId) + 1 ?? 1);
-            _context.Tags.Add(tag);
-            _context.SaveChanges();
+            return await _context.Tags.FindAsync(id);
         }
 
-        public void UpdateTag(Tag tag)
+        public async Task AddTagAsync(Tag tag)
+        {
+            tag.TagId = (short)((await _context.Tags.MaxAsync(a => (int?)a.TagId)) + 1 ?? 1);
+            await _context.Tags.AddAsync(tag);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateTagAsync(Tag tag)
         {
             _context.Tags.Update(tag);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteTag(int id)
+        public async Task DeleteTagAsync(int id)
         {
-            var tag = _context.Tags.Find(id);
+            var tag = await _context.Tags.FindAsync(id);
             if (tag != null)
             {
                 _context.Tags.Remove(tag);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
-        }
-
-        public IEnumerable<Tag> GetAllTagsPaging(int page, int pageSize)
-        {
-            return _context.Tags
-                .OrderBy(t => t.TagId)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
         }
     }
 }

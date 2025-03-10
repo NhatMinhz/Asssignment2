@@ -1,15 +1,14 @@
 ﻿using BusinessObjects;
-using Repository.Interfaces;
 
-namespace Repository.Interfaces
+namespace FUNewsManagementSystem.DAL.Interfaces
 {
     public interface ITagRepository
     {
-        IEnumerable<Tag> GetAllTags();
-        IEnumerable<Tag> GetTagsByIds(IEnumerable<int> tagIds);
-        Tag GetTagById(int id);
-        void AddTag(Tag tag);
-        void UpdateTag(Tag tag);
-        void DeleteTag(int id);
+        Task<IEnumerable<Tag>> GetAllTagsAsync();
+        Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagIds);
+        Task<Tag?> GetTagByIdAsync(int id);
+        Task AddTagAsync(Tag tag);
+        Task UpdateTagAsync(Tag tag);
+        Task DeleteTagAsync(int id);
     }
 }

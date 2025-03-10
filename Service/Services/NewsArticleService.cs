@@ -1,13 +1,8 @@
 ﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Hubs;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Repository.UOW;
-using Service.Interfaces;
-using FUNewsManagementSystem.BLL.Hubs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {

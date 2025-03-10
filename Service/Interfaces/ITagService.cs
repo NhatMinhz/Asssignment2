@@ -1,19 +1,14 @@
 ﻿using BusinessObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Service.Interfaces
+namespace FUNewsManagementSystem.BLL.Interfaces
 {
     public interface ITagService
     {
-        IEnumerable<Tag> GetAllTags();
-        IEnumerable<Tag> GetTagsByIds(IEnumerable<int> tagIds);
-        Tag GetTagById(int id);
-        void AddTag(Tag tag);
-        void UpdateTag(Tag tag);
-        void DeleteTag(int id);
+        Task<IEnumerable<Tag>> GetAllTagsAsync();
+        Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagIds);
+        Task<Tag?> GetTagByIdAsync(int id);
+        Task AddTagAsync(Tag tag);
+        Task UpdateTagAsync(Tag tag);
+        Task DeleteTagAsync(int id);
     }
 }
