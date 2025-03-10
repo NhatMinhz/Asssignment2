@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-
 using FUNewsManagementSystem.BLL.Interfaces;
 using FUNewsManagementSystem.DAL.Models;
 using FUNewsManagementSystem.ViewModel;
@@ -17,11 +16,11 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
 
         public ReportModel(INewArticleService newsArticleService)
         {
-            _newArticleService = newArticleService;
-            StartDate = new DateTime(2024, 1, 1); 
-            EndDate = DateTime.Now;
+            _newsArticleService = newsArticleService;
         }
 
+        public DateTime StartDate { get; set; } = DateTime.Now.AddMonths(-1);
+        public DateTime EndDate { get; set; } = DateTime.Now;
         public NewsReportViewModel NewsReportViewModel { get; set; } = new();
         public (SystemAccount CreatedBy, int ArticleCount)? TopContributor { get; set; }
         public (Category CategoryName, int ArticleCount)? MostPopularCategory { get; set; }
@@ -32,30 +31,21 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             StartDate = startDate ?? StartDate;
             EndDate = endDate ?? EndDate;
 
-            var articles = await _newsArticleService
-                .GetNewsReportAsync(StartDate, EndDate);
-
-            NewsReportViewModel.NewsArticles = articles
-                .Include(n => n.CreatedBy)  // Ensure CreatedBy is included
-                .Include(n => n.Category)   // Ensure Category is included
-                .ToList();
+            NewsReportViewModel.NewsArticles = await _newsArticleService.GetNewsReportAsync(StartDate, EndDate);
 
             TopContributor = NewsReportViewModel.NewsArticles
-                .Where(n => n.CreatedBy != null) // Avoid nulls
                 .GroupBy(n => n.CreatedBy)
                 .Select(g => (g.Key, g.Count()))
                 .OrderByDescending(g => g.Item2)
                 .FirstOrDefault();
 
             MostPopularCategory = NewsReportViewModel.NewsArticles
-                .Where(n => n.Category != null) // Avoid nulls
                 .GroupBy(n => n.Category)
                 .Select(g => (g.Key, g.Count()))
                 .OrderByDescending(g => g.Item2)
                 .FirstOrDefault();
 
             NewsTrends = NewsReportViewModel.NewsArticles
-                .Where(n => n.CreatedDate.HasValue) // Ensure CreatedDate exists
                 .GroupBy(n => n.CreatedDate.Value.Date)
                 .Select(g => (g.Key, g.Count()))
                 .OrderBy(g => g.Key)
