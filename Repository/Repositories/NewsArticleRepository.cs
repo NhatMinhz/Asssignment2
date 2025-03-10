@@ -105,11 +105,12 @@ namespace FUNewsManagementSystem.DAL.Repositories
             }
         }
 
-        public async Task<IEnumerable<NewsArticle>> GetFilteredNewsArticlesAsync(string searchTitle, int? categoryFilter)
+        public async Task<IEnumerable<NewsArticle>> GetFilteredNewsArticlesAsync(string? searchTitle, int? categoryFilter)
         {
             var query = _context.NewsArticles
                 .Include(n => n.Category)
-                .Include(n => n.CreatedBy)
+                .Include(n => n.NewsTags)
+                .ThenInclude(nt => nt.Tag)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTitle))
@@ -124,6 +125,7 @@ namespace FUNewsManagementSystem.DAL.Repositories
 
             return await query.ToListAsync();
         }
+
 
         public async Task<bool> HasNewsInCategoryAsync(int categoryId)
         {
