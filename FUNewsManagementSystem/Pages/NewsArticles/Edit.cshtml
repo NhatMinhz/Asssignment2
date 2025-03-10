@@ -76,37 +76,26 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="ListTag" class="form-label"></label>
-                <select asp-for="ListTag" class="form-select" asp-items="Model.Tags" required>
-                    <option value="">-- Select a Category --</option>
-                </select>
+                <label class="form-label">Tags</label>
+                <div>
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="ListTag" value="@tag.Value"
+                            @(Model.ListTag.Contains(int.Parse(tag.Value)) ? "checked" : "") />
+                            <label class="form-check-label">@tag.Text</label>
+                        </div>
+                    }
+                </div>
                 <span asp-validation-for="ListTag" class="text-danger"></span>
             </div>
+
+
 
             <div class="mb-3 form-check">
                 <input asp-for="NewsArticle.NewsStatus" class="form-check-input" type="checkbox" />
                 <label asp-for="NewsArticle.NewsStatus" class="form-check-label">Published</label>
             </div>
-
-            @* <div class="mb-3"> *@
-            @*     <label asp-for="CreatedById" class="form-label"></label> *@
-            @*     <select asp-for="CreatedById" class="form-select" asp-items="ViewBag.CreatedById" required> *@
-            @*         <option value="">-- Select Creator --</option> *@
-            @*     </select> *@
-            @*     <span asp-validation-for="CreatedById" class="text-danger"></span> *@
-            @* </div> *@
-
-            @* <div class="mb-3"> *@
-            @*     <label asp-for="UpdatedById" class="form-label"></label> *@
-            @*     <input asp-for="UpdatedById" class="form-control" readonly /> *@
-            @*     <span asp-validation-for="UpdatedById" class="text-danger"></span> *@
-            @* </div> *@
-
-            @* <div class="mb-3"> *@
-            @*     <label asp-for="ModifiedDate" class="form-label"></label> *@
-            @*     <input asp-for="ModifiedDate" type="datetime-local" class="form-control" readonly /> *@
-            @*     <span asp-validation-for="ModifiedDate" class="text-danger"></span> *@
-            @* </div> *@
 
             <div class="d-flex gap-3 mt-4">
                 <button type="submit" class="btn btn-success">

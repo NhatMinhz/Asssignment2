@@ -30,10 +30,10 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
         public NewsArticle NewsArticle { get; set; } = default!;
 
         [BindProperty]
-        public List<int> ListTag { get; set; } = default!;
+        public List<int> ListTag { get; set; } = new List<int>(); 
 
         public SelectList Categories { get; set; }
-        public SelectList Tags { get; set; }
+        public MultiSelectList Tags { get; set; } 
         public SelectList SystemAccounts { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -48,23 +48,33 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             {
                 return NotFound();
             }
+
             NewsArticle = newsarticle;
+            ListTag = newsarticle.NewsTags?.Select(t => t.TagId).ToList() ?? new List<int>();
+
             Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "CategoryId", "CategoryDesciption");
             SystemAccounts = new SelectList(await _systemAccountService.GetAllAccountsAsync(), "AccountId", "AccountId");
-            Tags = new SelectList(_tagService.GetAllTags(), "TagId", "TagName");
+
+            var allTags = _tagService.GetAllTags();
+            Tags = new MultiSelectList(allTags, "TagId", "TagName"); 
+
             return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                var allTags = _tagService.GetAllTags();
+                Tags = new MultiSelectList(allTags, "TagId", "TagName");
                 return Page();
             }
 
             try
             {
-                await _newArticleService.UpdateNewsArticleAsync(NewsArticle, ListTag);
+                var selectedTagIds = Request.Form["ListTag"].Select(int.Parse).ToList();
+                await _newArticleService.UpdateNewsArticleAsync(NewsArticle, selectedTagIds);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,9 +91,10 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             return RedirectToPage("./Index");
         }
 
+
         private bool NewsArticleExists(string id)
         {
-            return _newArticleService.GetNewsArticleByIdAsync(id) == null;
+            return _newArticleService.GetNewsArticleByIdAsync(id) != null;
         }
     }
 }
