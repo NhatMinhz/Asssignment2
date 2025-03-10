@@ -11,6 +11,8 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
         public ReportModel(INewArticleService newArticleService)
         {
             _newArticleService = newArticleService;
+            StartDate = new DateTime(2024, 1, 1); 
+            EndDate = DateTime.Now;
         }
 
         [BindProperty]
@@ -23,12 +25,20 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
 
         public async Task<IActionResult> OnGet()
         {
+            // Ensure StartDate and EndDate are within valid range
+            if (StartDate < new DateTime(1753, 1, 1))
+                StartDate = new DateTime(1753, 1, 1);
+
+            if (EndDate < new DateTime(1753, 1, 1))
+                EndDate = new DateTime(1753, 1, 1);
+
             NewsReportViewModel = new NewsReportViewModel()
             {
                 StartDate = StartDate,
                 EndDate = EndDate,
                 NewsArticles = await _newArticleService.GetNewsReportAsync(StartDate, EndDate)
             };
+
             return Page();
         }
     }
