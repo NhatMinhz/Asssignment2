@@ -4,7 +4,7 @@
     ViewData["Title"] = "News Report";
 }
 
-<h2 class="text-center mb-4 text-primary">News Report</h2>
+<h2 class="text-center mb-4 text-primary"><i class="fas fa-chart-bar"></i> News Report Dashboard</h2>
 
 <!-- Filter Form -->
 <form method="get" class="row g-3 mb-4 justify-content-center">
@@ -18,20 +18,52 @@
     </div>
     <div class="col-md-3 d-flex align-items-end">
         <button type="submit" class="btn btn-primary me-2"><i class="fas fa-filter"></i> View</button>
-        <a asp-action="Report" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Reset</a>
+        <a asp-page="Report" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Reset</a>
     </div>
 </form>
 
-<!-- Total Count Display -->
-@if (Model.NewsReportViewModel.NewsArticles != null && Model.NewsReportViewModel.NewsArticles.Any())
-{
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle"></i> Total News Articles: <strong>@Model.NewsReportViewModel.NewsArticles.Count()</strong>
+<!-- Dashboard Overview -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Total News Articles</div>
+            <div class="card-body">
+                <h2 class="card-title text-center">@Model.NewsReportViewModel.NewsArticles.Count()</h2>
+            </div>
+        </div>
     </div>
-}
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">User with Most News</div>
+            <div class="card-body">
+                <h4 class="card-title text-center">@Model.TopContributor?.CreatedBy?.AccountName ?? "N/A"</h4>
+                <p class="text-center">Articles: @Model.TopContributor?.ArticleCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Most Popular Category</div>
+            <div class="card-body">
+                <h4 class="card-title text-center">@Model.MostPopularCategory?.CategoryName ?? "N/A"</h4>
+                <p class="text-center">Articles: @Model.MostPopularCategory?.ArticleCount</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- Report Table -->
-<table class="table table-bordered table-striped">
+<!-- News Trends Chart -->
+<div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+        <i class="fas fa-chart-line"></i> News Published Over Time
+    </div>
+    <div class="card-body">
+        <canvas id="newsChart"></canvas>
+    </div>
+</div>
+
+<!-- News Table -->
+<table class="table table-bordered table-striped mt-4">
     <thead class="table-dark">
         <tr>
             <th>News Title</th>
@@ -41,7 +73,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.NewsReportViewModel.NewsArticles != null && Model.NewsReportViewModel.NewsArticles.Any())
+        @if (Model.NewsReportViewModel.NewsArticles.Any())
         {
             @foreach (var item in Model.NewsReportViewModel.NewsArticles)
             {
@@ -68,12 +100,7 @@
             background: #fff;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
         }
-
-            .table th, .table td {
-                vertical-align: middle;
-            }
 
         .table-hover tbody tr:hover {
             background-color: #f8f9fa;
@@ -82,5 +109,22 @@
 }
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('newsChart').getContext('2d');
+        var newsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.NewsTrends.Select(n => n.Date.ToString("yyyy-MM-dd")))),
+                datasets: [{
+                    label: 'News Articles Published',
+                    data: @Html.Raw(Json.Serialize(Model.NewsTrends.Select(n => n.Count))),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }]
+            }
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 }
