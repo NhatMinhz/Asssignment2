@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects;
-using Service.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Pages.Tags
 {
@@ -25,18 +22,26 @@ namespace FUNewsManagementSystem.Pages.Tags
         }
 
         [BindProperty]
-        public Tag Tag { get; set; } = default!;
+        public Tag Tag { get; set; } = new Tag();
 
-        public IActionResult OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _tagService.AddTag(Tag);
-
-            return RedirectToPage("./Index");
+            try
+            {
+                await _tagService.AddTagAsync(Tag);
+                TempData["SuccessMessage"] = "Tag created successfully!";
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Error creating tag: " + ex.Message);
+                return Page();
+            }
         }
     }
 }

@@ -1,49 +1,46 @@
 ﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Repository.UOW;
-using Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services
 {
     public class TagService : ITagService
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public TagService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public void AddTag(Tag tag)
+
+        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
         {
-            _unitOfWork.TagRepository.AddTag(tag);
+            return await _unitOfWork.TagRepository.GetAllTagsAsync();
         }
 
-        public void DeleteTag(int id)
+        public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(IEnumerable<int> tagIds)
         {
-            _unitOfWork.TagRepository.DeleteTag(id);
+            return await _unitOfWork.TagRepository.GetTagsByIdsAsync(tagIds);
         }
 
-        public IEnumerable<Tag> GetAllTags()
+        public async Task<Tag?> GetTagByIdAsync(int id)
         {
-            return _unitOfWork.TagRepository.GetAllTags();
+            return await _unitOfWork.TagRepository.GetTagByIdAsync(id);
         }
 
-        public Tag GetTagById(int id)
+        public async Task AddTagAsync(Tag tag)
         {
-            return _unitOfWork.TagRepository.GetTagById(id);
+            await _unitOfWork.TagRepository.AddTagAsync(tag);
         }
 
-        public IEnumerable<Tag> GetTagsByIds(IEnumerable<int> tagIds)
+        public async Task UpdateTagAsync(Tag tag)
         {
-            return _unitOfWork.TagRepository.GetTagsByIds(tagIds);
+            await _unitOfWork.TagRepository.UpdateTagAsync(tag);
         }
 
-        public void UpdateTag(Tag tag)
+        public async Task DeleteTagAsync(int id)
         {
-            _unitOfWork.TagRepository.UpdateTag(tag);
+            await _unitOfWork.TagRepository.DeleteTagAsync(id);
         }
     }
 }

@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Service.Interfaces;
-using System.Security.Claims;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace FUNewsManagementSystem.Pages.SystemAccounts
 {

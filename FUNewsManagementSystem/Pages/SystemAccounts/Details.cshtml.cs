@@ -1,10 +1,9 @@
 ﻿using BusinessObjects;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service.Interfaces;
-using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Pages.SystemAccounts
 {
@@ -21,7 +20,7 @@ namespace FUNewsManagementSystem.Pages.SystemAccounts
 
         public async Task<IActionResult> OnGetAsync(short id)
         {
-            if (id == 0) 
+            if (id == 0)
             {
                 return NotFound();
             }

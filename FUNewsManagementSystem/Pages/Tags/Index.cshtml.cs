@@ -1,12 +1,9 @@
-﻿using System;
+﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects;
-using Service.Interfaces;
 
 namespace FUNewsManagementSystem.Pages.Tags
 {
@@ -19,11 +16,11 @@ namespace FUNewsManagementSystem.Pages.Tags
             _tagService = tagService;
         }
 
-        public IList<Tag> Tag { get; set; } = default!;
+        public IList<Tag> Tag { get; set; } = new List<Tag>();
 
-        public void OnGetAsync()
+        public async Task OnGetAsync()
         {
-            Tag = _tagService.GetAllTags().ToList();
+            Tag = (await _tagService.GetAllTagsAsync()).ToList();
         }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects;
-using Service.Interfaces;
 
 namespace FUNewsManagementSystem.Pages.NewsArticles
 {
@@ -51,7 +47,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             NewsArticle = newsarticle;
             Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "CategoryId", "CategoryDesciption");
             SystemAccounts = new SelectList(await _systemAccountService.GetAllAccountsAsync(), "AccountId", "AccountId");
-            Tags = new SelectList(_tagService.GetAllTags(), "TagId", "TagName");
+            Tags = new SelectList(await _tagService.GetAllTagsAsync(), "TagId", "TagName");
             return Page();
         }
 

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects;
-using Service.Interfaces;
+using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Pages.Tags
 {
@@ -23,37 +19,32 @@ namespace FUNewsManagementSystem.Pages.Tags
         [BindProperty]
         public Tag Tag { get; set; } = default!;
 
-        public IActionResult OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            Tag = await _tagService.GetTagByIdAsync(id);
+
+            if (Tag == null)
             {
                 return NotFound();
             }
 
-            var tag = _tagService.GetTagById(id);
-            if (tag == null)
-            {
-                return NotFound();
-            }
-            Tag = tag;
             return Page();
         }
 
-        public IActionResult OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-
             try
             {
-                _tagService.UpdateTag(Tag);
+                await _tagService.UpdateTagAsync(Tag);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TagExists(Tag.TagId))
+                if (!await TagExists(Tag.TagId))
                 {
                     return NotFound();
                 }
@@ -66,9 +57,9 @@ namespace FUNewsManagementSystem.Pages.Tags
             return RedirectToPage("./Index");
         }
 
-        private bool TagExists(int id)
+        private async Task<bool> TagExists(int id)
         {
-            return _tagService.GetTagById(id) == null;
+            return await _tagService.GetTagByIdAsync(id) != null;
         }
     }
 }

@@ -1,12 +1,12 @@
 using BusinessObjects;
-using FUNewsManagementSystem;
 using FUNewsManagementSystem.BLL.Hubs;
+using FUNewsManagementSystem.BLL.Interfaces;
+using FUNewsManagementSystem.DAL.Interfaces;
+using FUNewsManagementSystem.DAL.Repositories;
+using FUNewsManagementSystem.DAL.UOW;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using Repository.Interfaces;
-using Repository.Repositories;
 using Repository.UOW;
-using Service.Interfaces;
 using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);

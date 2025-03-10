@@ -1,8 +1,8 @@
 ﻿using BusinessObjects;
+using FUNewsManagementSystem.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Repository.Interfaces;
 
-namespace Repository.Repositories
+namespace FUNewsManagementSystem.DAL.Repositories
 {
     public class NewsArticleRepository : INewsArticleRepository
     {

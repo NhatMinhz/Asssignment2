@@ -1,7 +1,7 @@
 using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service.Interfaces;
 
 namespace FUNewsManagementSystem.Pages.NewsArticles
 {

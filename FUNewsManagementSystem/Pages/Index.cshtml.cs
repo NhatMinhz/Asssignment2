@@ -1,17 +1,13 @@
 using BusinessObjects;
+using FUNewsManagementSystem.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using Service.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly INewArticleService _newsArticleService;    
+        private readonly INewArticleService _newsArticleService;
 
         public IndexModel(ILogger<IndexModel> logger, INewArticleService newsArticleService)
         {
