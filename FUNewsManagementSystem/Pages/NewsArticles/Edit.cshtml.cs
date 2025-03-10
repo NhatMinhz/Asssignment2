@@ -59,7 +59,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
         {
             if (!ModelState.IsValid)
             {
-                var allTags = _tagService.GetAllTags();
+                var allTags = await _tagService.GetAllTagsAsync();
                 Tags = new MultiSelectList(allTags, "TagId", "TagName");
                 return Page();
             }
