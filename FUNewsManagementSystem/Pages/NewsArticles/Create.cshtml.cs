@@ -39,36 +39,51 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
             Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "CategoryId", "CategoryName");
 
             var tags = await _tagService.GetAllTagsAsync() ?? new List<Tag>();
-            ViewData["Tags"] = new SelectList(tags, "TagId", "TagName");
+            ViewData["Tags"] = tags.Select(t => new SelectListItem { Value = t.TagId.ToString(), Text = t.TagName }).ToList();
 
             return Page();
         }
+
+
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 Categories = new SelectList(await _categoryService.GetAllCategoriesAsync(), "CategoryId", "CategoryName");
-                ViewData["Tags"] = new SelectList(await _tagService.GetAllTagsAsync(), "TagId", "TagName");
+                ViewData["Tags"] = (await _tagService.GetAllTagsAsync())?
+                    .Select(t => new SelectListItem { Value = t.TagId.ToString(), Text = t.TagName })
+                    .ToList();
                 return Page();
             }
 
-            await _newArticleService.AddNewsArticleAsync(new NewsArticle
+            try
             {
-                NewsArticleId = NewsArticle.NewsArticleId,
-                CreatedById = NewsArticle.CreatedById,
-                CreatedDate = NewsArticle.CreatedDate ?? DateTime.Now,
-                NewsTitle = NewsArticle.NewsTitle,
-                Headline = NewsArticle.Headline,
-                NewsContent = NewsArticle.NewsContent,
-                NewsSource = NewsArticle.NewsSource,
-                CategoryId = NewsArticle.CategoryId,
-                NewsStatus = NewsArticle.NewsStatus
-            }, NewsArticle.TagsId ?? new List<int>());
+                var selectedTagIds = Request.Form["NewsArticle.TagsId"].Select(int.Parse).ToList();
+
+                await _newArticleService.AddNewsArticleAsync(new NewsArticle
+                {
+                    NewsArticleId = NewsArticle.NewsArticleId,
+                    CreatedById = NewsArticle.CreatedById,
+                    CreatedDate = NewsArticle.CreatedDate ?? DateTime.Now,
+                    NewsTitle = NewsArticle.NewsTitle,
+                    Headline = NewsArticle.Headline,
+                    NewsContent = NewsArticle.NewsContent,
+                    NewsSource = NewsArticle.NewsSource,
+                    CategoryId = NewsArticle.CategoryId,
+                    NewsStatus = NewsArticle.NewsStatus
+                }, selectedTagIds);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "Error creating the news article: " + ex.Message;
+                return Page();
+            }
 
             TempData["SuccessMessage"] = "News article created successfully!";
             return RedirectToPage("./Index");
         }
+
 
     }
 }
