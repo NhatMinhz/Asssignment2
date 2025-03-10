@@ -45,6 +45,7 @@
             <th>News Source</th>
             <th>News Status</th>
             <th>Category</th>
+            <th>Tags</th>
             <th>Created By</th>
             <th>Actions</th>
         </tr>
@@ -61,6 +62,19 @@
                     <span class="badge rounded-pill @(item.NewsStatus ? "bg-success" : "bg-warning")">
                         @(item.NewsStatus ? "Published" : "Draft")
                     </span>
+                </td>
+                <td>
+                    @if (item.NewsTags != null && item.NewsTags.Any())
+                    {
+                        foreach (var tag in item.NewsTags)
+                        {
+                            <span class="badge bg-info">@tag.Tag.TagName</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Tags</span>
+                    }
                 </td>
                 <td>@(item.Category != null ? item.Category.CategoryName : "None")</td>
                 <td>@(item.CreatedBy != null ? item.CreatedBy.AccountName : "Unknown")</td>

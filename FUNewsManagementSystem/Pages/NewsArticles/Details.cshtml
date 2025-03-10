@@ -65,11 +65,27 @@
                     @(Model.NewsArticle.Category != null ? Model.NewsArticle.Category.CategoryName : "None")
                 </li>
                 <li class="list-group-item">
+                    <strong>Tags:</strong>
+                    @if (Model.NewsArticle.NewsTags.Any())
+                    {
+                        foreach (var newsTag in Model.NewsArticle.NewsTags)
+                        {
+                            <span class="badge bg-info text-white me-1">@newsTag.Tag.TagName</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">No Tags</span>
+                    }
+                </li>
+
+                <li class="list-group-item">
                     <strong>Last Updated:</strong> @Model.NewsArticle.ModifiedDate?.ToString("MMMM dd, yyyy", CultureInfo.InvariantCulture)
                 </li>
             </ul>
         </div>
     </div>
+
 
     <!-- Action Buttons -->
     <div class="d-flex gap-3 mt-4">
@@ -109,6 +125,11 @@
             .card:hover {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             }
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.4em 0.8em;
+            border-radius: 0.3rem;
+        }
     </style>
 }
 
