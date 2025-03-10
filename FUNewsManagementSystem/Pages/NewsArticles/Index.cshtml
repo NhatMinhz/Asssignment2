@@ -145,7 +145,7 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                     <input type="hidden" id="editArticlesId" asp-for="NewsArticle.NewsArticleId" />
-
+                    <input type="hidden" asp-for="NewsArticle.CreatedById" value="@userId" />
                     <div class="mb-3">
                         <label asp-for="NewsArticle.NewsTitle" class="form-label"></label>
                         <input asp-for="NewsArticle.NewsTitle" id="editTitle" class="form-control" placeholder="Enter title" required />
@@ -244,12 +244,12 @@
 
                         @if (User.IsInRole("Staff"))
                         {
-                            <a onclick="openEditModal('@item.NewsArticleId');" class="btn btn-warning btn-sm edit-button">
+                            <a onclick="openEditModal('@item.NewsArticleId');" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <form method="POST" asp-page="/NewsArticles/Delete" asp-route-id="'@item.NewsArticleId'" asp-page-handler="Delete" onsubmit="return jQueryModalDelete(this)" class="d-inline">
-                                <button type="submit" class="btn btn-danger text-white"> Delete</button>
+                            <form method="POST" asp-page="/NewsArticles/Delete" asp-route-id="@item.NewsArticleId" asp-page-handler="Delete" onsubmit="return jQueryModalDelete(this)" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm text-white"> <i class="fas fa-trash"></i></button>
                             </form>
                         }
                     </div>
