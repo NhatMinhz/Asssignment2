@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +26,7 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
         public (Category CategoryName, int ArticleCount)? MostPopularCategory { get; set; }
         public List<(DateTime Date, int Count)> NewsTrends { get; set; } = new();
 
+
         public async Task OnGetAsync(DateTime? startDate, DateTime? endDate)
         {
             StartDate = startDate ?? StartDate;
@@ -46,10 +47,12 @@ namespace FUNewsManagementSystem.Pages.NewsArticles
                 .FirstOrDefault();
 
             NewsTrends = NewsReportViewModel.NewsArticles
-                .GroupBy(n => n.CreatedDate.Value.Date)
-                .Select(g => (g.Key, g.Count()))
-                .OrderBy(g => g.Key)
-                .ToList();
+        .GroupBy(n => new DateTime(n.CreatedDate.Value.Year, n.CreatedDate.Value.Month, 1)) // Lấy ngày đầu tháng
+        .Select(g => (g.Key, g.Count()))
+        .OrderBy(g => g.Key)
+        .ToList();
         }
+
+
     }
 }

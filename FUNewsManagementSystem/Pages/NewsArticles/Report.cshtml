@@ -79,7 +79,7 @@
             {
                 <tr>
                     <td>@item.NewsTitle</td>
-                    <td>@(item.CreatedDate?.ToString("MMMM dd, yyyy") ?? "N/A")</td>
+                    <td>@(item.CreatedDate?.ToString("dd/MM/yyyy") ?? "N/A")</td>
                     <td>@(item.Category?.CategoryName ?? "Uncategorized")</td>
                     <td>@(item.CreatedBy?.AccountName ?? "Unknown")</td>
                 </tr>
@@ -111,20 +111,62 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var ctx = document.getElementById('newsChart').getContext('2d');
-        var newsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(Model.NewsTrends.Select(n => n.Date.ToString("yyyy-MM-dd")))),
-                datasets: [{
-                    label: 'News Articles Published',
-                    data: @Html.Raw(Json.Serialize(Model.NewsTrends.Select(n => n.Count))),
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 2
-                }]
+        document.addEventListener("DOMContentLoaded", function () {
+            // Chuyển đổi tuple thành object hợp lệ
+            var chartData = @Html.Raw(Json.Serialize(
+            Model.NewsTrends.Select(n => new { month = n.Date.ToString("MM/yyyy"), count = n.Count })
+            ));
+
+            console.log("Chart Data:", chartData); // Debugging
+
+            if (!chartData || chartData.length === 0) {
+                console.warn("No data available for chart.");
+                return;
             }
+
+            // Lấy danh sách tháng và tổng bài báo của mỗi tháng
+            var labels = chartData.map(item => item.month);
+            var dataValues = chartData.map(item => item.count);
+
+            console.log("Labels:", labels);
+            console.log("Data Values:", dataValues);
+
+            // Vẽ biểu đồ
+            var ctx = document.getElementById("newsChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Total Articles per Month",
+                        data: dataValues,
+                        backgroundColor: "rgba(54, 162, 235, 0.5)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Month"
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: "Number of Articles"
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         });
     </script>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 }
